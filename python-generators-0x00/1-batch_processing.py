@@ -28,3 +28,4 @@ def batch_processing(batch_size):
         filtered = [row for row in batch if float(row[3]) > 25]  # loop 2 (inside list comp)
         for user in filtered:  # loop 3
             yield user
+    return
