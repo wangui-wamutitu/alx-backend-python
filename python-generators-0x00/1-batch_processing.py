@@ -24,8 +24,8 @@ def batch_processing(batch_size):
     """
     Processes user_data in batches and yields users with age > 25.
     """
-    for batch in stream_users_in_batches(batch_size):  # loop 1
-        filtered = [row for row in batch if float(row[3]) > 25]  # loop 2 (inside list comp)
+    for batch in stream_users_in_batches(batch_size):
+        filtered = [row for row in batch if float(row[3]) > 25]  
         for user in filtered:  # loop 3
             yield user
     return
