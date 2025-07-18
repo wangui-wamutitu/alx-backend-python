@@ -18,10 +18,12 @@ class TestGithubOrgClient(unittest.TestCase):
     Unit tests for the GithubOrgClient class.
     """
 
-    @parameterized.expand([
-        ("google",),
-        ("abc",),
-    ])
+    @parameterized.expand(
+        [
+            ("google",),
+            ("abc",),
+        ]
+    )
     @patch("client.get_json")
     def test_org(self, org_name: str, mock_get_json: MagicMock) -> None:
         """
@@ -46,7 +48,9 @@ class TestGithubOrgClient(unittest.TestCase):
         """
         payload = {"repos_url": "https://api.github.com/orgs/testorg/repos"}
 
-        with patch.object(GithubOrgClient, "org", new_callable=PropertyMock) as mock_org:
+        with patch.object(
+            GithubOrgClient, "org", new_callable=PropertyMock
+        ) as mock_org:
             mock_org.return_value = payload
             client = GithubOrgClient("example")
             result = client._public_repos_url
@@ -70,7 +74,9 @@ class TestGithubOrgClient(unittest.TestCase):
         ]
         mock_get_json.return_value = test_payload
 
-        with patch.object(GithubOrgClient, "_public_repos_url", new_callable=PropertyMock) as mock_public_url:
+        with patch.object(
+            GithubOrgClient, "_public_repos_url", new_callable=PropertyMock
+        ) as mock_public_url:
             mock_public_url.return_value = "http://fake.url/repos"
 
             client = GithubOrgClient("testorg")
@@ -80,10 +86,12 @@ class TestGithubOrgClient(unittest.TestCase):
             mock_public_url.assert_called_once()
             mock_get_json.assert_called_once_with("http://fake.url/repos")
 
-    @parameterized.expand([
-        ({"license": {"key": "my_license"}}, "my_license", True),
-        ({"license": {"key": "other_license"}}, "my_license", False),
-    ])
+    @parameterized.expand(
+        [
+            ({"license": {"key": "my_license"}}, "my_license", True),
+            ({"license": {"key": "other_license"}}, "my_license", False),
+        ]
+    )
     def test_has_license(self, repo: Dict, license_key: str, expected: bool) -> None:
         """
         Test that has_license correctly matches license keys.
@@ -97,14 +105,16 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(result, expected)
 
 
-@parameterized_class([
-    {
-        "org_payload": org_payload,
-        "repos_payload": repos_payload,
-        "expected_repos": expected_repos,
-        "apache2_repos": apache2_repos,
-    }
-])
+@parameterized_class(
+    [
+        {
+            "org_payload": org_payload,
+            "repos_payload": repos_payload,
+            "expected_repos": expected_repos,
+            "apache2_repos": apache2_repos,
+        }
+    ]
+)
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """
     Integration tests for GithubOrgClient using fixture data.
