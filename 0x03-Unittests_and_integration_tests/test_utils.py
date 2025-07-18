@@ -2,32 +2,11 @@
 
 from parameterized import parameterized
 import unittest
-from typing import Mapping, Sequence, Any, Dict, Callable
+from typing import Mapping, Sequence, Any, Dict
 from unittest.mock import patch, Mock
-from functools import wraps
-import requests
-
-
-def access_nested_map(nested_map: Mapping, path: Sequence) -> Any:
-    """Access nested map with key path.
-    Parameters
-    ----------
-    nested_map: Mapping
-        A nested map
-    path: Sequence
-        a sequence of key representing a path to the value
-    Example
-    -------
-    >>> nested_map = {"a": {"b": {"c": 1}}}
-    >>> access_nested_map(nested_map, ["a", "b", "c"])
-    1
-    """
-    for key in path:
-        if not isinstance(nested_map, Mapping):
-            raise KeyError(key)
-        nested_map = nested_map[key]
-
-    return nested_map
+from utils import access_nested_map
+from utils import get_json
+from utils import memoize
 
 
 """
@@ -80,22 +59,6 @@ class TestAccessNestedMap(unittest.TestCase):
 """
 Unit tests for the get_json function.
 """
-
-
-def get_json(url: str) -> Dict:
-    """
-    Get JSON from remote URL.
-
-    Args:
-        url (str): The URL to fetch JSON from.
-
-    Returns:
-        Dict: The parsed JSON response.
-    """
-    response = requests.get(url)
-    return response.json()
-
-
 class TestGetJson(unittest.TestCase):
     """
     Test case for the get_json function.
@@ -107,15 +70,10 @@ class TestGetJson(unittest.TestCase):
             ("http://holberton.io", {"payload": False}),
         ]
     )
-    @patch("requests.get")
+    @patch("utils.requests.get")
     def test_get_json(self, test_url: str, test_payload: Dict, mock_get: Mock) -> None:
         """
         Test that get_json returns correct payload from mocked HTTP response.
-
-        Args:
-            test_url (str): The URL being requested.
-            test_payload (Dict): The expected JSON payload to be returned.
-            mock_get (Mock): The mocked requests.get function.
         """
         mock_response = Mock()
         mock_response.json.return_value = test_payload
@@ -125,35 +83,6 @@ class TestGetJson(unittest.TestCase):
 
         mock_get.assert_called_once_with(test_url)
         self.assertEqual(result, test_payload)
-
-
-def memoize(fn: Callable) -> Callable:
-    """Decorator to memoize a method.
-    Example
-    -------
-    class MyClass:
-        @memoize
-        def a_method(self):
-            print("a_method called")
-            return 42
-    >>> my_object = MyClass()
-    >>> my_object.a_method
-    a_method called
-    42
-    >>> my_object.a_method
-    42
-    """
-    attr_name = "_{}".format(fn.__name__)
-
-    @wraps(fn)
-    def memoized(self):
-        """ "memoized wraps"""
-        if not hasattr(self, attr_name):
-            setattr(self, attr_name, fn(self))
-        return getattr(self, attr_name)
-
-    return property(memoized)
-
 
 class TestMemoize(unittest.TestCase):
     """
