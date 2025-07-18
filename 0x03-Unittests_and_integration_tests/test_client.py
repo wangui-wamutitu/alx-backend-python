@@ -10,7 +10,7 @@ from parameterized import parameterized, parameterized_class
 from unittest.mock import patch, Mock, PropertyMock, MagicMock
 from typing import Dict
 from client import GithubOrgClient
-from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
+from fixtures import repos_payload, expected_repos, apache2_repos
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -44,7 +44,7 @@ class TestGithubOrgClient(unittest.TestCase):
 
     def test_public_repos_url(self) -> None:
         """
-        Test that _public_repos_url returns the expected repos_url from mocked org.
+        Test that _public_repos_url returns the expected repos_url.
         """
         payload = {"repos_url": "https://api.github.com/orgs/testorg/repos"}
 
@@ -108,7 +108,6 @@ class TestGithubOrgClient(unittest.TestCase):
 @parameterized_class(
     [
         {
-            "org_payload": org_payload,
             "repos_payload": repos_payload,
             "expected_repos": expected_repos,
             "apache2_repos": apache2_repos,
