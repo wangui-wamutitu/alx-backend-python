@@ -1,5 +1,6 @@
 from .models import User, Message, Conversation
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
 class UserSerializer(serializers.ModelSerializer):
     """
@@ -21,6 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = ["user_id", "created_at"]
+        last_name = serializers.CharField(read_only=True, default="doe")
 
 class UserMiniSerializer(serializers.ModelSerializer):
     """
@@ -33,6 +35,7 @@ class UserMiniSerializer(serializers.ModelSerializer):
 
 class ConversationSerializer(serializers.ModelSerializer):
     participants = UserMiniSerializer(read_only=True)
+    messages = serializers.SerializerMethodField()
 
     class Meta:
         model = Conversation
@@ -42,6 +45,10 @@ class ConversationSerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = fields
+
+    def get_messages(self, obj):
+        from .serializers import MessageSerializer
+        return MessageSerializer(obj.messages.all(), many=True).data
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = UserMiniSerializer(read_only=True)
