@@ -43,12 +43,12 @@ class Conversation(models.Model):
     conversation_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True, db_index=True
     )
-    participant_a = models.ForeignKey(
+    participants = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="conversations_as_a"
     )
-    participant_b = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="conversations_as_b"
-    )
+    # participant_b = models.ForeignKey(
+    #     settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="conversations_as_b"
+    # )
 
     created_at = models.DateTimeField(default=timezone.now)
 
