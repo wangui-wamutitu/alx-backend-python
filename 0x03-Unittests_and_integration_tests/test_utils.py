@@ -87,6 +87,7 @@ class TestMemoize(unittest.TestCase):
         """
         Test that memoize calls the method only once and returns the cached result.
         """
+
         class TestClass:
             """Class with a memoized property for testing."""
 

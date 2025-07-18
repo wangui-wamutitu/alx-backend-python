@@ -96,16 +96,13 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(result, expected)
 
 
-"""
-Integration tests for GithubOrgClient using TEST_PAYLOAD fixtures.
-"""
 @parameterized_class(
     [
         {
             "org_payload": org_payload,
             "repos_payload": repos_payload,
             "expected_repos": expected_repos,
-            "apache2_repos": apache2_repos
+            "apache2_repos": apache2_repos,
         }
     ]
 )
@@ -148,6 +145,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """
         client = GithubOrgClient("google")
         self.assertEqual(client.public_repos(license="apache-2.0"), self.apache2_repos)
+
 
 if __name__ == "__main__":
     unittest.main()
