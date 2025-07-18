@@ -46,9 +46,6 @@ class Conversation(models.Model):
     participants = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="conversations_as_a"
     )
-    # participant_b = models.ForeignKey(
-    #     settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="conversations_as_b"
-    # )
 
     created_at = models.DateTimeField(default=timezone.now)
 
