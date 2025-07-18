@@ -5,7 +5,7 @@ from parameterized import parameterized
 from typing import Mapping, Sequence, Any, Dict, Callable
 from unittest.mock import patch, Mock
 from functools import wraps
-# import requests
+import requests
 
 """
 Unit tests for the access_nested_map function.
