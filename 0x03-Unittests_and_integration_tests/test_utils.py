@@ -1,15 +1,11 @@
 #!/usr/bin/env python3
 
-import unittest
 from parameterized import parameterized
+import unittest
 from typing import Mapping, Sequence, Any, Dict, Callable
 from unittest.mock import patch, Mock
 from functools import wraps
 import requests
-
-"""
-Unit tests for the access_nested_map function.
-"""
 
 
 def access_nested_map(nested_map: Mapping, path: Sequence) -> Any:
@@ -34,6 +30,9 @@ def access_nested_map(nested_map: Mapping, path: Sequence) -> Any:
     return nested_map
 
 
+"""
+Unit tests for the access_nested_map function.
+"""
 class TestAccessNestedMap(unittest.TestCase):
     """
     Test case for the access_nested_map function.
