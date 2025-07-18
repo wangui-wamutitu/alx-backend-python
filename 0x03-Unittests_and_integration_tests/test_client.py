@@ -5,36 +5,9 @@ from parameterized import parameterized, parameterized_class
 from unittest.mock import patch, Mock, PropertyMock
 from typing import Dict
 from client import GithubOrgClient
-from fixtures import TEST_PAYLOAD
+from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
 import requests
 
-
-def get_json(url: str) -> Dict:
-    """
-    Get JSON from remote URL.
-
-    Args:
-        url (str): The URL to fetch JSON from.
-
-    Returns:
-        Dict: The parsed JSON response.
-    """
-    response = requests.get(url)
-    return response.json()
-
-
-class GithubOrgClient:
-    """Client for GitHub organization data."""
-
-    ORG_URL = "https://api.github.com/orgs/{}"
-
-    def __init__(self, org_name: str) -> None:
-        self.org_name = org_name
-
-    def org(self) -> Dict:
-        """Fetch organization data from GitHub."""
-        url = self.ORG_URL.format(self.org_name)
-        return get_json(url)
 
 class TestGithubOrgClient(unittest.TestCase):
     """
@@ -126,17 +99,14 @@ class TestGithubOrgClient(unittest.TestCase):
 """
 Integration tests for GithubOrgClient using TEST_PAYLOAD fixtures.
 """
-
-
 @parameterized_class(
     [
         {
-            "org_payload": payload[0],
-            "repos_payload": payload[1],
-            "expected_repos": payload[2],
-            "apache2_repos": payload[3],
+            "org_payload": org_payload,
+            "repos_payload": repos_payload,
+            "expected_repos": expected_repos,
+            "apache2_repos": apache2_repos
         }
-        for payload in TEST_PAYLOAD
     ]
 )
 class TestIntegrationGithubOrgClient(unittest.TestCase):
