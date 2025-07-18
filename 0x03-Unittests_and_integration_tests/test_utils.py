@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+"""Unit tests for access_nested_map"""
 from parameterized import parameterized
 import unittest
 from typing import Mapping, Sequence, Any, Dict
@@ -9,9 +9,6 @@ from utils import get_json
 from utils import memoize
 
 
-"""
-Unit tests for the access_nested_map function.
-"""
 class TestAccessNestedMap(unittest.TestCase):
     """
     Test case for the access_nested_map function.
@@ -38,7 +35,6 @@ class TestAccessNestedMap(unittest.TestCase):
 
         self.assertEqual(access_nested_map(nested_map, path), expected)
 
-
     @parameterized.expand([({}, ("a",)), ({"a": 1}, ("a", "b"))])
     def test_access_nested_map_exception(
         self, nested_map: Mapping, path: Sequence, expected_key: str
@@ -53,12 +49,9 @@ class TestAccessNestedMap(unittest.TestCase):
         """
         with self.assertRaises(KeyError) as context:
             access_nested_map(nested_map, path)
-        self.assertEqual(str(context.exception), f"'{expected_key}'")
+        self.assertEqual(str(context.exception), f"'{path[-1]}'")
 
 
-"""
-Unit tests for the get_json function.
-"""
 class TestGetJson(unittest.TestCase):
     """
     Test case for the get_json function.
@@ -84,16 +77,16 @@ class TestGetJson(unittest.TestCase):
         mock_get.assert_called_once_with(test_url)
         self.assertEqual(result, test_payload)
 
+
 class TestMemoize(unittest.TestCase):
     """
-    Test case for the memoize decorator.
+    Tests for memoize decorator
     """
 
     def test_memoize(self) -> None:
         """
         Test that memoize calls the method only once and returns the cached result.
         """
-
         class TestClass:
             """Class with a memoized property for testing."""
 
@@ -114,6 +107,7 @@ class TestMemoize(unittest.TestCase):
             self.assertEqual(result1, 42)
             self.assertEqual(result2, 42)
             mock_method.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()
