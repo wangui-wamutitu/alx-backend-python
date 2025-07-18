@@ -66,3 +66,8 @@ class MessageSerializer(serializers.ModelSerializer):
             "sent_at",
         ]
         read_only_fields = ["message_id", "sent_at"]
+
+    def validate(self, data):
+        if data["sender"] == data["recipient"]:
+            raise serializers.ValidationError("Sender and recipient cannot be the same.")
+        return data
