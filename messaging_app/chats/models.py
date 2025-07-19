@@ -43,10 +43,7 @@ class Conversation(models.Model):
     conversation_id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True, db_index=True
     )
-    participants = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="conversations_as_a"
-    )
-
+    participants = models.ManyToManyField('User', related_name='conversations')
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -58,7 +55,7 @@ class Conversation(models.Model):
         ]
 
     def __str__(self):
-        return f"Conversation between {self.participant_a.email} and {self.participant_b.email}"
+        return f"Conversation {self.conversation_id} with {self.participants.count()} participants"
 
 
 class Message(models.Model):
