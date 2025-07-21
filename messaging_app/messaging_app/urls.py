@@ -21,7 +21,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from messaging_app.chats.auth import CustomTokenObtainPairSerializer
 
 
-# frontend will not need to decode the JWT to get the user info — it’s right there, username and email or anything else that will be necessary
+# Overrides the default token view to use the custom serializer
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
