@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
-from .permissions import IsOwnerOrReadOnly
+from .permissions import IsOwnerOrReadOnly, IsParticipantOfConversation
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -29,7 +29,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     ViewSet to list, retrieve, and create messages in user's conversations.
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated & IsParticipantOfConversation]
     serializer_class = MessageSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["conversation"]

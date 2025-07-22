@@ -7,5 +7,19 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     """
 
     def has_object_permission(self, request, view, obj):
-        # Return True if permission is granted, False otherwise.
+        if request.method in permissions.SAFE_METHODS:
+            return True
         return obj.sender == request.user or obj.recipient == request.user
+    
+
+class IsParticipantOfConversation(permissions.BasePermission):
+    """
+    Custom permission to allow only participants of a conversation to access related messages.
+    """
+
+    def has_permission(self, request, view):
+        # Ensure user is authenticated for any API access
+        return request.user and request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        return request.user in obj.conversation.participants.all()
