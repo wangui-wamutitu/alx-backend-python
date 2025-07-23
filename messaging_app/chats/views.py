@@ -6,6 +6,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
 from .permissions import IsOwnerOrReadOnly, IsParticipantOfConversation
+from .filters import MessageFilter
+from .pagination import StandardResultsSetPagination
 
 
 class ConversationViewSet(viewsets.ModelViewSet):
@@ -34,6 +36,8 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ["conversation"]
+    filterset_class = MessageFilter
+    pagination_class = StandardResultsSetPagination
 
     def get_queryset(self):
         return Message.objects.filter(conversation__participants=self.request.user)
