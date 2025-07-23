@@ -18,7 +18,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from messaging_app.chats.auth import CustomTokenObtainPairSerializer
+from chats.auth import CustomTokenObtainPairSerializer 
 
 
 # Overrides the default token view to use the custom serializer

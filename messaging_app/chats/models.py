@@ -46,14 +46,6 @@ class Conversation(models.Model):
     participants = models.ManyToManyField('User', related_name='conversations')
     created_at = models.DateTimeField(default=timezone.now)
 
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["participant_a", "participant_b"],
-                name="unique_conversation_pair",
-            )
-        ]
-
     def __str__(self):
         return f"Conversation {self.conversation_id} with {self.participants.count()} participants"
 
