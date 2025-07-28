@@ -31,6 +31,8 @@ class Message(models.Model):
     )
     content = models.TextField(max_length=250, null=False, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    edited = models.BooleanField(default=False)
+    edited_at = models.DateTimeField(null=True, blank=True)
 
 
 def __str__(self):
@@ -55,3 +57,10 @@ class Notification(models.Model):
 
 def __str__(self):
     return f"Notification sent to {self.sent_to} about {self.message}"
+
+
+class MessageHistory(models.Model):
+    id= models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True, db_index=True)
+    message = models.ForeignKey('Message', on_delete=models.CASCADE, related_name='history')
+    old_content = models.TextField()
+    edited_at = models.DateTimeField(auto_now_add=True)
