@@ -10,7 +10,7 @@ class User(models.Model):
     )
     username = models.TextField(max_length=150, null=False, blank=False)
     email = models.EmailField(unique=True, null=False, blank=False, db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 
 def __str__(self):
