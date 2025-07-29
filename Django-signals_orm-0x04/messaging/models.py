@@ -38,7 +38,6 @@ class Message(models.Model):
     parent_message = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name="replies")
     read = models.BooleanField(default=True)
 
-    objects = models.Manager()
     unread = UnreadMessagesManager()
 
 def __str__(self):
