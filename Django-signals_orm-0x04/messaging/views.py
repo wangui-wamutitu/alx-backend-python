@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth import get_user_model
 from .models import Message
+from django.views.decorators import cache
 
 
 User = get_user_model()
@@ -43,6 +44,25 @@ class MessageViewSet(viewsets.ModelViewSet):
 
         threads = [build_thread(msg) for msg in top_level_messages]
         return Response(threads, status=status.HTTP_200_OK)
+    
+    @cache.method_decorator(cache.cache_page(60))
+    @action(detail=False, methods=["get"], url_path='')
+    def get_messages(self, request):
+        user= request.user
+        messages = Message.object.filter(sender=user).selected_related('receiver', 'sender')
+
+        data = [
+            {
+                "id": str(msg.id),
+                "sender": msg.sender.username,
+                "receiver": msg.receiver.username,
+                "content": msg.content,
+                "created_at": msg.created_at,
+            }
+            for msg in messages
+        ]
+        return Response(data, status=status.HTTP_200_OK)
+    
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
