@@ -35,12 +35,12 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"], url_path="threads")
     def get_threaded_messages(self, request):
-        user = request.user
+        sender = request.user
 
         top_level_messages = (
             Message.objects.filter(
                 parent_message__isnull=True,
-                sender=user 
+                sender=sender 
             )
             .select_related("sender", "receiver") 
             .prefetch_related(
