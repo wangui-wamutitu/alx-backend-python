@@ -19,6 +19,29 @@ def build_thread(message):
     }
 
 
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=["get"], url_path="threads")
+    def get_threaded_messages(self, request):
+
+        top_level_messages = (
+            Message.objects.filter(
+                parent_message__isnull=True,
+                sender=request.user 
+            )
+            .select_related("sender", "receiver") 
+            .prefetch_related(
+                "replies",                # Prefetch direct replies
+                "replies__sender",        # Prefetch sender of replies
+                "replies__receiver",      # Prefetch receiver of replies
+                "replies__replies",       # Prefetch second-level replies
+            )
+        )
+
+        threads = [build_thread(msg) for msg in top_level_messages]
+        return Response(threads, status=status.HTTP_200_OK)
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
@@ -33,23 +56,4 @@ class UserViewSet(viewsets.ModelViewSet):
             status=status.HTTP_204_NO_CONTENT,
         )
 
-    @action(detail=False, methods=["get"], url_path="threads")
-    def get_threaded_messages(self, request):
-        sender = request.user
-
-        top_level_messages = (
-            Message.objects.filter(
-                parent_message__isnull=True,
-                sender=sender 
-            )
-            .select_related("sender", "receiver") 
-            .prefetch_related(
-                "replies",
-                "replies__sender",
-                "replies__receiver",
-                "replies__replies" 
-            )
-        )
-
-        threads = [build_thread(msg) for msg in top_level_messages]
-        return Response(threads, status=status.HTTP_200_OK)
+   
