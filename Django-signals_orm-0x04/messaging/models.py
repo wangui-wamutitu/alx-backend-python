@@ -34,6 +34,7 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
     edited_at = models.DateTimeField(null=True, blank=True)
+    parent_message = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name="replies")
 
 def __str__(self):
     return f"{self.sender} sent a message to {self.receiver}"
