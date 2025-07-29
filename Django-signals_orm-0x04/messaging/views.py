@@ -23,6 +23,7 @@ class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
     permission_classes = [IsAuthenticated]
 
+    # GET /messages/threads/
     @action(detail=False, methods=["get"], url_path="threads")
     def get_threaded_messages(self, request):
 
@@ -55,5 +56,26 @@ class UserViewSet(viewsets.ModelViewSet):
             {"detail": "Your account has been deleted"},
             status=status.HTTP_204_NO_CONTENT,
         )
+    
+    # GET /users/unread
+    @action(detail=False, methods=["get"], url_path="unread")
+    def get_unread_msgs(self, request):
+        user = request.user
 
+        unread_messages = (
+            Message.unread.for_user(user)
+            .only("id", "sender", "content", "created_at") 
+            .select_related("sender")
+        )
+
+        data = [
+            {
+                "id": str(msg.id),
+                "sender": msg.sender.username,
+                "content": msg.content,
+                "created_at": msg.created_at,
+            }
+            for msg in unread_messages
+        ]
+        return Response(data, status=status.HTTP_200_OK)
    

@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 import uuid
 from django.conf import settings
 from django.utils import timezone
+from .managers import UnreadMessagesManager
 
 
 class User(AbstractUser):
@@ -35,6 +36,10 @@ class Message(models.Model):
     edited = models.BooleanField(default=False)
     edited_at = models.DateTimeField(null=True, blank=True)
     parent_message = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name="replies")
+    read = models.BooleanField(default=True)
+
+    objects = models.Manager()
+    unread = UnreadMessagesManager()
 
 def __str__(self):
     return f"{self.sender} sent a message to {self.receiver}"
