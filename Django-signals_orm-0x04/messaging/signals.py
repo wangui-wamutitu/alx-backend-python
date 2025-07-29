@@ -1,6 +1,6 @@
 from django.dispatch import receiver
-from .models import Message, Notification, MessageHistory
-from django.db.models.signals import post_save, pre_save
+from .models import Message, Notification, MessageHistory, User
+from django.db.models.signals import post_save, pre_save, post_delete
 from django.utils import timezone
 
 
@@ -28,5 +28,24 @@ def log_edit_message(sender, instance, **kwargs):
 
         # Log old content to history
         MessageHistory.objects.create(
-            message=instance, old_content=old_instance.content, edited_at=timezone.now(), edited_by=instance.sender
+            message=instance,
+            old_content=old_instance.content,
+            edited_at=timezone.now(),
+            edited_by=instance.sender,
         )
+
+
+@receiver(post_delete, sender=User)
+def delete_related_user_info(sender, instance, **kwargs):
+    # Delete messages
+    Message.objects.filter(sender=instance).delete()
+    Message.objects.filter(receiver=instance).delete()
+
+    # Delete notifications
+    Notification.objects.filter(user=instance).delete()
+
+    # Delete message histories
+    histories = MessageHistory.objects.filter(
+        messages__sender=instance
+    ) | MessageHistory.objects.filter(messages__receiver=instance)
+    histories.distinct().delete()
