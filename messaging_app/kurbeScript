@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+set -e
+
+echo "=== Installing Minikube and kubectl ==="
+
+# Install kubectl (Kubernetes CLI)
+if ! command -v kubectl &> /dev/null
+then
+    echo "Installing kubectl..."
+    curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+    chmod +x kubectl
+    sudo mv kubectl /usr/local/bin/
+else
+    echo "kubectl already installed"
+fi
+
+# Install Minikube
+if ! command -v minikube &> /dev/null
+then
+    echo "Installing Minikube..."
+    curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+    sudo install minikube-linux-amd64 /usr/local/bin/minikube
+else
+    echo "Minikube already installed"
+fi
+
+echo "=== Starting Minikube Cluster ==="
+minikube start
+
+echo "=== Verifying Cluster Status ==="
+kubectl cluster-info
+
+echo "=== Retrieving Available Pods ==="
+kubectl get pods --all-namespaces
