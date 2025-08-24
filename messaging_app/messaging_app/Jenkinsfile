@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        python 'Python3'  // This references the Python installation you configured
+        python 'Python3' 
     }
 
     environment {
@@ -11,7 +11,7 @@ pipeline {
         CREDENTIALS_ID = 'github-creds'
         
         // Docker configuration
-        DOCKER_IMAGE = 'collekta/messaging-app'
+        DOCKER_IMAGE = 'wangui-wamutitu/messaging-app'
         DOCKER_TAG = "latest-${env.BUILD_ID}"
         DOCKER_REGISTRY_CREDENTIALS = 'dockerhub-creds'
         
